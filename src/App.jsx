@@ -56,7 +56,7 @@ export default function App() {
       const firstAt = serials.indexOf(serial) + 1;
       setDuplicates((prev) => [...prev, { serial, firstAt, dupAt: nextScanCount }]);
       setLastStatus({ type: "dup", message: `DUPLICADO detectado: ${serial} (picado antes en #${firstAt})` });
-      const errorAudio = new Audio("/Error.mp3");
+      const errorAudio = new Audio(`${import.meta.env.BASE_URL}Error.mp3`);
       errorAudio.volume = 1.0;
       errorAudio.play().catch(() => { });
       setInputValue("");
@@ -66,7 +66,7 @@ export default function App() {
 
     setSerials((prev) => [...prev, serial]);
     setLastStatus({ type: "ok", message: `Añadido: ${serial}` });
-    const correctAudio = new Audio("/Correct.mp3");
+    const correctAudio = new Audio(`${import.meta.env.BASE_URL}Correct.mp3`);
     correctAudio.volume = 0.5;
     correctAudio.play().catch(() => { });
     setInputValue("");
