@@ -21,8 +21,8 @@ export default function App() {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed.serials))        setSerials(parsed.serials);
-        if (Array.isArray(parsed.duplicates))     setDuplicates(parsed.duplicates);
+        if (Array.isArray(parsed.serials)) setSerials(parsed.serials);
+        if (Array.isArray(parsed.duplicates)) setDuplicates(parsed.duplicates);
         if (typeof parsed.scanCount === "number") setScanCount(parsed.scanCount);
       }
     } catch (e) {
@@ -53,9 +53,12 @@ export default function App() {
     setScanCount(nextScanCount);
 
     if (serialSet.has(serial)) {
-      const firstAt = serials.indexOf(serial) + 1; // posición 1-based del original
+      const firstAt = serials.indexOf(serial) + 1;
       setDuplicates((prev) => [...prev, { serial, firstAt, dupAt: nextScanCount }]);
       setLastStatus({ type: "dup", message: `DUPLICADO detectado: ${serial} (picado antes en #${firstAt})` });
+      const errorAudio = new Audio("/Error.mp3");
+      errorAudio.volume = 1.0;
+      errorAudio.play().catch(() => { });
       setInputValue("");
       inputRef.current?.focus();
       return;
@@ -63,6 +66,9 @@ export default function App() {
 
     setSerials((prev) => [...prev, serial]);
     setLastStatus({ type: "ok", message: `Añadido: ${serial}` });
+    const correctAudio = new Audio("/Correct.mp3");
+    correctAudio.volume = 0.5;
+    correctAudio.play().catch(() => { });
     setInputValue("");
     inputRef.current?.focus();
   }
@@ -107,8 +113,10 @@ export default function App() {
 
   return (
     <div className="page">
-      <header className="header">
-        <h1>Detector de <span>duplicados</span></h1>
+      <header className="header flex">
+        <div className="brand-banner__title">Serial Guard</div>
+        <div className="brand-banner__sub">by Pulsia Itech</div>
+
         <p className="sub">
           Escanea o escribe un número de serie y pulsa <b>Enter</b>.
           Los duplicados se detectan al instante.
@@ -221,6 +229,10 @@ export default function App() {
           Si el lector añade Enter automáticamente, solo escanea sin tocar nada más.
         </p>
       </footer>
+
+      <div className="copyright">
+        © {new Date().getFullYear()} Daniel Gallego
+      </div>
     </div>
   );
 }
