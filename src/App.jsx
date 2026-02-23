@@ -67,7 +67,7 @@ export default function App() {
     setSerials((prev) => [...prev, serial]);
     setLastStatus({ type: "ok", message: `Añadido: ${serial}` });
     const correctAudio = new Audio(`${import.meta.env.BASE_URL}correct.mp3`);
-    correctAudio.volume = 0.5;
+    correctAudio.volume = 0.9;
     correctAudio.play().catch(() => { });
     setInputValue("");
     inputRef.current?.focus();
