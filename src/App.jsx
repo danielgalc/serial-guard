@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 
 function normalizeSerial(value) {
-  return (value || "").trim().toUpperCase();
+  return (value || "").trim().toUpperCase().replace(/'/g, '-');
 }
 
 const STORAGE_KEY = "serial_scan_dup.current_pallet_v1";
@@ -101,11 +101,10 @@ export default function App() {
       setLastStatus({ type: "empty", message: "No hay seriales para copiar" });
       return;
     }
-    const values = [...serialSet].map(s => `"${s}"`).join(", ");
-    const text = `SerialNumber IN (${values})`;
+    const text = [...serialSet].join(", ");
     try {
       await navigator.clipboard.writeText(text);
-      setLastStatus({ type: "ok", message: `Query copiada con ${serialSet.size} serial(es)` });
+      setLastStatus({ type: "ok", message: `${serialSet.size} serial(es) copiados al portapapeles` });
     } catch {
       setLastStatus({ type: "empty", message: "No se pudo acceder al portapapeles" });
     }
@@ -178,7 +177,7 @@ export default function App() {
             ✕ Reiniciar pallet
           </button>
           <button className="btn btn--primary" onClick={copyValues} disabled={serials.length === 0}>
-            ⎘ Copiar Query
+            ⎘ Copiar valores
           </button>
         </div>
       </section>
