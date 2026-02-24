@@ -67,7 +67,7 @@ export default function App() {
     setSerials((prev) => [...prev, serial]);
     setLastStatus({ type: "ok", message: `Añadido: ${serial}` });
     const correctAudio = new Audio(`${import.meta.env.BASE_URL}correct.mp3`);
-    correctAudio.volume = 0.9;
+    correctAudio.volume = 0.5;
     correctAudio.play().catch(() => { });
     setInputValue("");
     inputRef.current?.focus();
@@ -101,10 +101,11 @@ export default function App() {
       setLastStatus({ type: "empty", message: "No hay seriales para copiar" });
       return;
     }
-    const text = [...serialSet].join(", ");
+    const values = [...serialSet].map(s => `"${s}"`).join(", ");
+    const text = `SerialNumber IN (${values})`;
     try {
       await navigator.clipboard.writeText(text);
-      setLastStatus({ type: "ok", message: `${serialSet.size} serial(es) copiados al portapapeles` });
+      setLastStatus({ type: "ok", message: `Query copiada con ${serialSet.size} serial(es)` });
     } catch {
       setLastStatus({ type: "empty", message: "No se pudo acceder al portapapeles" });
     }
@@ -177,7 +178,7 @@ export default function App() {
             ✕ Reiniciar pallet
           </button>
           <button className="btn btn--primary" onClick={copyValues} disabled={serials.length === 0}>
-            ⎘ Copiar valores
+            ⎘ Copiar Query
           </button>
         </div>
       </section>
